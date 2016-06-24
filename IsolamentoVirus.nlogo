@@ -18,7 +18,7 @@ particles-own [
   mass
   energy
   isvirus
-  max-dist
+  isolated
 ]
 
 
@@ -67,6 +67,7 @@ to make-particles
       set size smallest-virus-size
              + random-float (largest-virus-size - smallest-virus-size)
     ]
+    set isolated 0
     
     ;; set the mass proportional to the area of the particle
     set mass (size * size)
@@ -98,6 +99,19 @@ to position-randomly  ;; particle procedure
         one-of [1 -1] * random-float (box-edge - 0.5 - size / 2)
 end
 
+to calculatemaxdist
+  ask particles with [isvirus = 1][
+   
+      if not (any? other particles with [isvirus = 0] in-radius radius)[
+        set isolated 1
+        set color blue
+      ]
+    
+    
+    ]
+ 
+end
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;; go procedures  ;;;;;;;;;;;;;;;;;
@@ -114,6 +128,8 @@ to go
     update-variables
     update-plots
   ]
+  calculatemaxdist
+  
 end
 
 to update-variables
@@ -532,7 +548,7 @@ initial-number-particles
 initial-number-particles
 1
 250
-95
+149
 1
 1
 NIL
@@ -564,7 +580,7 @@ largest-particle-size
 largest-particle-size
 1
 10
-5
+2
 0.5
 1
 NIL
@@ -579,7 +595,7 @@ smallest-particle-size
 smallest-particle-size
 1
 5
-4.5
+1.5
 0.5
 1
 NIL
@@ -683,45 +699,60 @@ percent-slow
 11
 
 SLIDER
-210
-35
-417
-68
+192
+43
+840
+76
 initial-number-viruses
 initial-number-viruses
 0
 100
-4
+49
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-305
+193
+79
+401
+112
+smallest-virus-size
+smallest-virus-size
+0
+6
+0.5
+0.5
+1
+NIL
+HORIZONTAL
+
+SLIDER
+193
 115
-482
+402
 148
-smallest-virus-size
-smallest-virus-size
+largest-virus-size
+largest-virus-size
 0
-6
-0.5
+10
+1
 0.5
 1
 NIL
 HORIZONTAL
 
 SLIDER
-360
-150
-532
-183
-largest-virus-size
-largest-virus-size
+406
+115
+578
+148
+radius
+radius
 0
-6
-1
+10
+7
 0.5
 1
 NIL
@@ -1127,5 +1158,5 @@ Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 
 @#$#@#$#@
-1
+0
 @#$#@#$#@
