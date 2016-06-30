@@ -19,6 +19,7 @@ particles-own [
   energy
   isvirus
   isolated
+  time-isolated
 ]
 
 
@@ -45,36 +46,35 @@ to setup
   update-variables
   set init-avg-speed avg-speed
   set init-avg-energy avg-energy
+  
+    
+  ;; output
 end
 
 to make-particles
   create-particles initial-number-particles [
     set speed 1
-    
-    ifelse contagem_virus < initial-number-viruses[
+    set time-isolated 0
+    ifelse contagem_virus < initial-number-viruses
+    [
       set isvirus 1
-     set color red
-     set contagem_virus contagem_virus + 1 
+      set color red
+      set contagem_virus contagem_virus + 1
     ]
     [
       set isvirus 0
-      set color green]
-
+      set color green
+    ]
     ifelse isvirus = 0
-    [set size smallest-particle-size
-             + random-float (largest-particle-size - smallest-particle-size)]
+    [set size smallest-particle-size + random-float (largest-particle-size - smallest-particle-size)]
     [
-      set size smallest-virus-size
-             + random-float (largest-virus-size - smallest-virus-size)
+      set size smallest-virus-size + random-float (largest-virus-size - smallest-virus-size)
     ]
     set isolated 0
     
     ;; set the mass proportional to the area of the particle
     set mass (size * size)
     set energy kinetic-energy
-
-    
-   
   ]
   ;; When space is tight, placing the big particles first improves
   ;; our chances of eventually finding places for all of them.
@@ -84,7 +84,9 @@ to make-particles
       while [overlapping?] [ position-randomly ]
     ]
   ]
+
 end
+
 
 to-report overlapping?  ;; particle procedure
   ;; here, we use IN-RADIUS just for improved speed; the real testing
@@ -100,16 +102,18 @@ to position-randomly  ;; particle procedure
 end
 
 to calculatemaxdist
-  ask particles with [isvirus = 1][
-   
-      if not (any? other particles with [isvirus = 0] in-radius radius)[
+  ask particles with [isvirus = 1][  
+      ifelse not (any? other particles with [isvirus = 0] in-radius radius)
+      [
         set isolated 1
         set color blue
+        set time-isolated time-isolated + tick-delta
       ]
-    
-    
-    ]
- 
+      [
+        set isolated 0
+        set color red
+      ]
+  ]
 end
 
 
@@ -129,7 +133,11 @@ to go
     update-plots
   ]
   calculatemaxdist
-  
+  foreach sort particles with [isvirus = 1][
+    ask ? [
+      output-show time-isolated
+    ]
+  ]
 end
 
 to update-variables
@@ -496,9 +504,9 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-987
+886
 10
-1560
+1459
 604
 40
 40
@@ -548,7 +556,7 @@ initial-number-particles
 initial-number-particles
 1
 250
-149
+28
 1
 1
 NIL
@@ -613,10 +621,10 @@ avg-speed
 11
 
 PLOT
-6
-449
-340
-604
+3
+504
+337
+659
 Speed Histogram
 NIL
 NIL
@@ -635,10 +643,10 @@ PENS
 "init-avg-speed" 1.0 0 -16777216 true "" ""
 
 PLOT
-343
-449
-687
-604
+342
+504
+686
+659
 Energy Histogram
 NIL
 NIL
@@ -707,7 +715,7 @@ initial-number-viruses
 initial-number-viruses
 0
 100
-49
+9
 1
 1
 NIL
@@ -757,6 +765,13 @@ radius
 1
 NIL
 HORIZONTAL
+
+OUTPUT
+8
+260
+334
+432
+12
 
 @#$#@#$#@
 ## WHAT IS IT?
