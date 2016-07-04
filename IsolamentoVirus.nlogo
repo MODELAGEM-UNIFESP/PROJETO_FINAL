@@ -23,6 +23,7 @@ particles-own [
   energy
   isvirus
   isolated
+  time-isolated
 ]
 
 
@@ -49,8 +50,13 @@ to setup
   update-variables
   set init-avg-speed avg-speed
   set init-avg-energy avg-energy
+<<<<<<< HEAD
   set time-isolated 0 
   set flag 0 
+=======
+  
+    
+>>>>>>> 3b77a3d9a14ed7ac5adf848a36baf91934ea1f82
   ;; output
 end
 
@@ -107,6 +113,7 @@ to calculatemaxdist
   ask particles with [isvirus = 1][  
       ifelse not (any? other particles with [isvirus = 0] in-radius radius)
       [
+<<<<<<< HEAD
         set time-isolated time-isolated + tick-delta
       ]
       [
@@ -116,9 +123,19 @@ to calculatemaxdist
       [
         set flag 1
         set become-isolated-at ticks
+=======
+>>>>>>> 3b77a3d9a14ed7ac5adf848a36baf91934ea1f82
         set isolated 1
         set color blue
+        set time-isolated time-isolated + tick-delta
       ]
+<<<<<<< HEAD
+=======
+      [
+        set isolated 0
+        set color red
+      ]
+>>>>>>> 3b77a3d9a14ed7ac5adf848a36baf91934ea1f82
   ]
 end
 
@@ -511,9 +528,15 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
+<<<<<<< HEAD
 847
 10
 1420
+=======
+886
+10
+1459
+>>>>>>> 3b77a3d9a14ed7ac5adf848a36baf91934ea1f82
 604
 40
 40
@@ -563,7 +586,11 @@ initial-number-particles
 initial-number-particles
 1
 250
+<<<<<<< HEAD
 50
+=======
+28
+>>>>>>> 3b77a3d9a14ed7ac5adf848a36baf91934ea1f82
 1
 1
 NIL
@@ -628,10 +655,17 @@ avg-speed
 11
 
 PLOT
+<<<<<<< HEAD
 1
 479
 335
 634
+=======
+3
+504
+337
+659
+>>>>>>> 3b77a3d9a14ed7ac5adf848a36baf91934ea1f82
 Speed Histogram
 NIL
 NIL
@@ -650,10 +684,17 @@ PENS
 "init-avg-speed" 1.0 0 -16777216 true "" ""
 
 PLOT
+<<<<<<< HEAD
 340
 479
 684
 634
+=======
+342
+504
+686
+659
+>>>>>>> 3b77a3d9a14ed7ac5adf848a36baf91934ea1f82
 Energy Histogram
 NIL
 NIL
@@ -721,8 +762,13 @@ SLIDER
 initial-number-viruses
 initial-number-viruses
 0
+<<<<<<< HEAD
 1
 1
+=======
+100
+9
+>>>>>>> 3b77a3d9a14ed7ac5adf848a36baf91934ea1f82
 1
 1
 NIL
@@ -773,6 +819,7 @@ radius
 NIL
 HORIZONTAL
 
+<<<<<<< HEAD
 MONITOR
 2
 315
@@ -794,6 +841,14 @@ precision become-isolated-at 3
 17
 1
 11
+=======
+OUTPUT
+8
+260
+334
+432
+12
+>>>>>>> 3b77a3d9a14ed7ac5adf848a36baf91934ea1f82
 
 @#$#@#$#@
 ## WHAT IS IT?
