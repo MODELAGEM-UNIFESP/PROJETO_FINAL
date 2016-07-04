@@ -9,6 +9,10 @@ globals [
   fast medium slow                           ;; current counts
   percent-slow percent-medium percent-fast   ;; percentage of current counts
   contagem_virus
+  time-isolated
+  time-isolated-max
+  become-isolated-at
+  flag
 ]
 
 breed [particles particle]
@@ -45,36 +49,34 @@ to setup
   update-variables
   set init-avg-speed avg-speed
   set init-avg-energy avg-energy
+  set time-isolated 0 
+  set flag 0 
+  ;; output
 end
 
 to make-particles
   create-particles initial-number-particles [
     set speed 1
-    
-    ifelse contagem_virus < initial-number-viruses[
+    set time-isolated 0
+    ifelse contagem_virus < initial-number-viruses
+    [
       set isvirus 1
-     set color red
-     set contagem_virus contagem_virus + 1 
+      set color red
+      set contagem_virus contagem_virus + 1
     ]
     [
       set isvirus 0
-      set color green]
-
-    ifelse isvirus = 0
-    [set size smallest-particle-size
-             + random-float (largest-particle-size - smallest-particle-size)]
-    [
-      set size smallest-virus-size
-             + random-float (largest-virus-size - smallest-virus-size)
+      set color green
     ]
-    set isolated 0
+    ifelse isvirus = 0
+    [set size smallest-particle-size + random-float (largest-particle-size - smallest-particle-size)]
+    [
+      set size smallest-virus-size + random-float (largest-virus-size - smallest-virus-size)
+    ]
     
     ;; set the mass proportional to the area of the particle
     set mass (size * size)
     set energy kinetic-energy
-
-    
-   
   ]
   ;; When space is tight, placing the big particles first improves
   ;; our chances of eventually finding places for all of them.
@@ -84,7 +86,9 @@ to make-particles
       while [overlapping?] [ position-randomly ]
     ]
   ]
+
 end
+
 
 to-report overlapping?  ;; particle procedure
   ;; here, we use IN-RADIUS just for improved speed; the real testing
@@ -100,16 +104,22 @@ to position-randomly  ;; particle procedure
 end
 
 to calculatemaxdist
-  ask particles with [isvirus = 1][
-   
-      if not (any? other particles with [isvirus = 0] in-radius radius)[
+  ask particles with [isvirus = 1][  
+      ifelse not (any? other particles with [isvirus = 0] in-radius radius)
+      [
+        set time-isolated time-isolated + tick-delta
+      ]
+      [
+        set time-isolated 0
+      ]
+      if time-isolated > 5
+      [
+        set flag 1
+        set become-isolated-at ticks
         set isolated 1
         set color blue
       ]
-    
-    
-    ]
- 
+  ]
 end
 
 
@@ -118,6 +128,7 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 to go
+  if flag = 1 [stop]
   choose-next-collision
   ask particles [ jump speed * tick-delta ]
   perform-next-collision
@@ -129,7 +140,11 @@ to go
     update-plots
   ]
   calculatemaxdist
-  
+  foreach sort particles with [isvirus = 1][
+    ask ? [
+      output-show time-isolated
+    ]
+  ]
 end
 
 to update-variables
@@ -496,9 +511,9 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-987
+847
 10
-1560
+1420
 604
 40
 40
@@ -542,13 +557,13 @@ NIL
 SLIDER
 0
 45
-190
+293
 78
 initial-number-particles
 initial-number-particles
 1
 250
-149
+50
 1
 1
 NIL
@@ -574,7 +589,7 @@ NIL
 SLIDER
 0
 115
-190
+293
 148
 largest-particle-size
 largest-particle-size
@@ -589,7 +604,7 @@ HORIZONTAL
 SLIDER
 0
 79
-190
+293
 112
 smallest-particle-size
 smallest-particle-size
@@ -602,10 +617,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-5
-155
-101
-200
+2
+428
+98
+473
 average speed
 avg-speed
 2
@@ -613,10 +628,10 @@ avg-speed
 11
 
 PLOT
-6
-449
-340
-604
+1
+479
+335
+634
 Speed Histogram
 NIL
 NIL
@@ -635,10 +650,10 @@ PENS
 "init-avg-speed" 1.0 0 -16777216 true "" ""
 
 PLOT
-343
-449
-687
-604
+340
+479
+684
+634
 Energy Histogram
 NIL
 NIL
@@ -655,10 +670,10 @@ PENS
 "init-avg-energy" 1.0 0 -16777216 true "" ""
 
 MONITOR
-102
-154
-205
-199
+99
+428
+202
+473
 average-energy
 avg-energy
 2
@@ -666,10 +681,10 @@ avg-energy
 11
 
 MONITOR
-5
 205
-82
-250
+428
+282
+473
 % fast
 percent-fast
 0
@@ -677,10 +692,10 @@ percent-fast
 11
 
 MONITOR
-85
-205
-181
-250
+285
+428
+381
+473
 % medium
 percent-medium
 0
@@ -688,10 +703,10 @@ percent-medium
 11
 
 MONITOR
-185
-205
-268
-250
+385
+428
+468
+473
 % slow
 percent-slow
 0
@@ -699,25 +714,25 @@ percent-slow
 11
 
 SLIDER
-192
-43
-840
-76
+1
+258
+172
+291
 initial-number-viruses
 initial-number-viruses
 0
-100
-49
+1
+1
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-193
-79
-401
-112
+1
+150
+293
+183
 smallest-virus-size
 smallest-virus-size
 0
@@ -729,10 +744,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-193
-115
-402
-148
+1
+186
+293
+219
 largest-virus-size
 largest-virus-size
 0
@@ -744,10 +759,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-406
-115
-578
-148
+1
+222
+173
+255
 radius
 radius
 0
@@ -757,6 +772,28 @@ radius
 1
 NIL
 HORIZONTAL
+
+MONITOR
+2
+315
+137
+360
+time-isolated-max 
+precision time-isolated 3
+17
+1
+11
+
+MONITOR
+145
+316
+293
+361
+Become isolated at
+precision become-isolated-at 3
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
