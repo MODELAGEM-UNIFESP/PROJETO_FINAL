@@ -52,6 +52,9 @@ to setup
   set init-avg-energy avg-energy
   set time-isolated 0
   set flag 0
+  foreach sort particles with [isvirus = 1][
+    watch ?
+  ]
   ;; output
 end
 
@@ -491,6 +494,7 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;; reporters ;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
 to-report init-particle-speed
   report 1
 end
@@ -515,13 +519,13 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-688
+782
 10
-1261
-604
-40
-40
-6.951
+1331
+580
+50
+50
+5.34
 1
 20
 1
@@ -531,10 +535,10 @@ GRAPHICS-WINDOW
 0
 0
 1
--40
-40
--40
-40
+-50
+50
+-50
+50
 1
 1
 1
@@ -621,10 +625,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-2
-428
-98
-473
+5
+376
+101
+421
 average speed
 avg-speed
 2
@@ -632,10 +636,10 @@ avg-speed
 11
 
 PLOT
-1
-479
-335
-634
+5
+427
+339
+582
 Speed Histogram
 NIL
 NIL
@@ -654,10 +658,10 @@ PENS
 "init-avg-speed" 1.0 0 -16777216 true "" ""
 
 PLOT
-340
-479
-684
-634
+344
+427
+688
+582
 Energy Histogram
 NIL
 NIL
@@ -674,10 +678,10 @@ PENS
 "init-avg-energy" 1.0 0 -16777216 true "" ""
 
 MONITOR
-99
-428
-202
-473
+103
+376
+206
+421
 average-energy
 avg-energy
 2
@@ -685,10 +689,10 @@ avg-energy
 11
 
 MONITOR
-205
-428
-282
-473
+209
+376
+286
+421
 % fast
 percent-fast
 0
@@ -696,10 +700,10 @@ percent-fast
 11
 
 MONITOR
-285
-428
-381
-473
+289
+376
+385
+421
 % medium
 percent-medium
 0
@@ -707,10 +711,10 @@ percent-medium
 11
 
 MONITOR
-385
-428
-468
-473
+389
+376
+472
+421
 % slow
 percent-slow
 0
@@ -778,10 +782,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-394
-10
-529
-55
+302
+45
+437
+90
 time-isolated-max
 precision time-isolated 3
 17
@@ -789,10 +793,10 @@ precision time-isolated 3
 11
 
 MONITOR
-10
-335
-158
-380
+560
+45
+708
+90
 Become isolated at
 precision become-isolated-at 3
 17
@@ -800,10 +804,10 @@ precision become-isolated-at 3
 11
 
 MONITOR
-164
-334
-278
-379
+441
+45
+555
+90
 NIL
 distcenter
 17
